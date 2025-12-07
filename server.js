@@ -36,6 +36,11 @@ async function claimSetupToken(setupToken) {
     
     const newAccessUrl = await response.text();
     console.log('✓ Got access URL');
+    console.log('===========================================');
+    console.log('SAVE THIS ACCESS URL IN RENDER ENVIRONMENT:');
+    console.log('Key: SIMPLEFIN_ACCESS_URL');
+    console.log('Value:', newAccessUrl);
+    console.log('===========================================');
     return newAccessUrl;
   } catch (error) {
     console.error('✗ Error claiming token:', error.message);
@@ -100,6 +105,15 @@ app.get('/api/health', (req, res) => {
     provider: 'simplefin',
     connected: !!accessUrl 
   });
+});
+
+// Get access URL (use this once, then delete this endpoint!)
+app.get('/api/get-access-url', (req, res) => {
+  if (accessUrl) {
+    res.json({ accessUrl: accessUrl });
+  } else {
+    res.json({ error: 'No access URL in memory' });
+  }
 });
 
 // Initialize connection (claim the setup token)
